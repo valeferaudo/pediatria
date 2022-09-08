@@ -1,31 +1,31 @@
-const express = require ('express');
+const express = require('express');
 require('dotenv').config();
-// const { dbConnection } = require ('./database/config');
-const cors = require ('cors')
-const { fillDayCollection } = require ('./seed/day.seed');
-const { fillAdmin } = require ('./seed/admin.seed');
+const cors = require('cors');
+const { dbConnection } = require('./database/config');
+const { fillDayCollection } = require('./seed/day.seed');
+const { fillAdmin } = require('./seed/admin.seed');
 
-//Create server
+// Create server
 const app = express();
 
-//Database connection  
+// Database connection
 dbConnection();
 
-//Seeders
+// Seeders
 fillAdmin();
 fillDayCollection();
 
-//settings
-app.set('Port',process.env.PORT);
+// settings
+app.set('Port', process.env.PORT);
 
-//middlewares
-app.use(cors({origin:'http://localhost:4200'}));
+// middlewares
+app.use(cors({ origin: 'http://localhost:4200' }));
 
 app.use(express.json());
 
-//routes
+// routes
 
-// //VALIDAR EL JWT EN CADA RUTA   
+// //VALIDAR EL JWT EN CADA RUTA
 // app.use('/api/users',require('./routes/user.routes'));
 // app.use('/api/sports',require('./routes/sport.routes'));
 // app.use('/api/services',require('./routes/service.routes'));
@@ -42,7 +42,7 @@ app.use(express.json());
 // app.use('/api/debts',require('./routes/debt.routes'));
 // app.use('/api/reports',require('./routes/report.routes'));
 
-//start server
-app.listen(app.get('Port'),()=>{
-    console.log(`Server on port: ${app.get('Port')}`)
+// start server
+app.listen(app.get('Port'), () => {
+  console.log(`Server on port: ${app.get('Port')}`);
 });
