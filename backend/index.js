@@ -2,6 +2,8 @@ const express = require ('express');
 require('dotenv').config();
 // const { dbConnection } = require ('./database/config');
 const cors = require ('cors')
+const { fillDayCollection } = require ('./seed/day.seed');
+const { fillAdmin } = require ('./seed/admin.seed');
 
 //Create server
 const app = express();
@@ -9,6 +11,9 @@ const app = express();
 //Database connection  
 dbConnection();
 
+//Seeders
+fillAdmin();
+fillDayCollection();
 
 //settings
 app.set('Port',process.env.PORT);

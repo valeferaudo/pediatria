@@ -19,12 +19,14 @@ const PatientSchema = new Schema({
         phone:{type:Number, required:true},
     },
     personalHistory:{
-        birthWeight:{type:Date},
+        birthWeight:{type:Number},
         apgar:{type:Number},
-
+        allergies:{type:String}
     },
     familyHistory:{
-
+        pregnancyHistory: {type:String},
+        gynaecologist:{type:String},
+        
     },
     deletedDate:{type: Date, default:null}
 },{collection:'patients'})
