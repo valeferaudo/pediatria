@@ -16,17 +16,19 @@ const PatientSchema = new Schema({
     name: { type: String, required: true },
     lastName: { type: String, required: true },
     phone: { type: Number, required: true },
+    email: { type: String, required: true },
   },
   personalHistory: {
     birthWeight: { type: Number },
     apgar: { type: Number },
-    allergies: { type: String },
+    allergies: [{ type: String }],
   },
   familyHistory: {
     pregnancyHistory: { type: String },
     gynaecologist: { type: String },
 
   },
+  createdDate: { type: Date },
   deletedDate: { type: Date, default: null },
 }, { collection: 'patients' });
 

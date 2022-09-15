@@ -28,6 +28,10 @@ app.use(express.json());
 // //VALIDAR EL JWT EN CADA RUTA
 // app.use('/api/users',require('./routes/user.routes'));
 app.use('/api/login', require('./routes/auth.routes'));
+app.use('/api/states', require('./routes/state.routes'));
+app.use('/api/cities', require('./routes/city.routes'));
+app.use('/api/patients', require('./routes/patient.routes'));
+app.use('/api/pathologies', require('./routes/pathology.routes'));
 
 // start server
 app.listen(app.get('Port'), () => {

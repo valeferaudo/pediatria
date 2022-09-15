@@ -1,0 +1,486 @@
+<div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="card-title"><strong>Nuevo Paciente</strong></h2>
+    </div>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="card">
+    <div class="row card-header">
+      <div class="col-sm-6 col-md-3">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          (click)="showStep('one')"
+          [class.active]="step === 'one'"
+          [class.bg-error]="stepOne"
+          style="
+            width: 100%;
+            white-space: normal;
+            word-wrap: break-word;
+            height: 100%;
+          "
+        >
+          Datos Personales
+        </button>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          (click)="showStep('two')"
+          [class.active]="step === 'two'"
+          [class.bg-error]="stepTwo"
+          style="
+            width: 100%;
+            white-space: normal;
+            word-wrap: break-word;
+            height: 100%;
+          "
+        >
+          Padre - Madre - Tutor
+        </button>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          (click)="showStep('three')"
+          [class.active]="step === 'three'"
+          [class.bg-error]="stepThree"
+          style="
+            width: 100%;
+            white-space: normal;
+            word-wrap: break-word;
+            height: 100%;
+          "
+        >
+          Antecedentes Personales
+        </button>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <button
+          type="button"
+          class="btn btn-outline-dark"
+          (click)="showStep('four')"
+          [class.active]="step === 'four'"
+          [class.bg-error]="stepFour"
+
+          style="
+            width: 100%;
+            white-space: normal;
+            word-wrap: break-word;
+            height: 100%;
+          "
+        >
+          Antecedentes Familiares
+        </button>
+      </div>
+    </div>
+    <form [formGroup]="patientForm" autocomplete="off">
+      <div class="animated fadeIn" *ngIf="step === 'one'">
+        <div class="card-body">
+          <div class="row">
+            <div
+              class="form-group col-md-4 m-t-5 m-b-5"
+              [class.has-danger]="getFieldValid('name')"
+            >
+              <label for=""><strong>Nombre</strong></label>
+              <input
+                type="text"
+                class="form-control form-control-line"
+                placeholder="Ingrese un nombre"
+                formControlName="name"
+                [class.form-control-danger]="getFieldValid('name')"
+              />
+              <div class="form-control-feedback" *ngIf="getFieldValid('name')">
+                *Ingrese el nombre
+              </div>
+            </div>
+            <div
+              class="form-group col-md-4 m-t-5 m-b-5"
+              [class.has-danger]="getFieldValid('lastName')"
+            >
+              <label for=""
+                ><strong>Apellido</strong
+                ><span class="font-13 text-muted">
+                  (Ej: 3492658803)</span
+                ></label
+              >
+              <input
+                type="text"
+                class="form-control form-control-line"
+                formControlName="lastName"
+                placeholder="Ingrese el apellido"
+                maxlength="60"
+                [class.form-control-danger]="getFieldValid('lastName')"
+              />
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('lastName')"
+              >
+                *Ingrese el apellido
+              </div>
+            </div>
+            <div
+              class="form-group col-md-4 m-t-5 m-b-5"
+              [class.has-danger]="getFieldValid('dni')"
+            >
+              <label for=""
+                ><strong>DNI</strong
+                ><span class="font-13 text-muted"> (Sin Puntos)</span></label
+              >
+              <input
+                type="number"
+                class="form-control form-control-line"
+                formControlName="dni"
+                placeholder="Ingrese el DNI"
+                maxlength="60"
+                [class.form-control-danger]="getFieldValid('dni')"
+              />
+              <div class="form-control-feedback" *ngIf="getFieldValid('dni')">
+                *Ingrese el DNI
+              </div>
+            </div>
+            <div
+              class="form-group col-md-4 m-t-5 m-b-5"
+              [class.has-danger]="getFieldValid('birthDate')"
+            >
+              <label for=""
+                ><strong>Fecha Nacimiento</strong
+                ><span class="font-13 text-muted"></span
+              ></label>
+              <input
+                type="date"
+                class="form-control form-control-line"
+                formControlName="birthDate"
+                placeholder="Ingrese la fecha de nacimiento"
+                [class.form-control-danger]="getFieldValid('birthDate')"
+              />
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('birthDate')"
+              >
+                *Ingrese la fecha de nacimiento
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <div
+                  class="form-group col-md-5 m-t-5 m-b-5"
+                  [class.has-danger]="getFieldValid('street')"
+                >
+                  <label for=""
+                    ><strong>Dirección</strong
+                    ><span class="font-13 text-muted"> (Calle)</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-line"
+                    formControlName="street"
+                    placeholder="Ingrese la calle"
+                    [class.form-control-danger]="getFieldValid('street')"
+                  />
+                  <div
+                    class="form-control-feedback"
+                    *ngIf="getFieldValid('street')"
+                  >
+                    *Ingrese la calle
+                  </div>
+                </div>
+                <div
+                  class="form-group col-md-2 m-t-5 m-b-5"
+                  [class.has-danger]="getFieldValid('streetNumber')"
+                >
+                  <label for=""
+                    ><strong>Nro</strong
+                    ><span class="font-13 text-muted"> (Nro)</span></label
+                  >
+                  <input
+                    type="number"
+                    class="form-control form-control-line"
+                    formControlName="streetNumber"
+                    placeholder="Nro"
+                    [class.form-control-danger]="getFieldValid('streetNumber')"
+                  />
+                  <div
+                    class="form-control-feedback"
+                    *ngIf="getFieldValid('streetNumber')"
+                  >
+                    *Ingrese el número
+                  </div>
+                </div>
+                <div
+                  class="form-group col-md-5 m-t-5 m-b-5"
+                  [class.has-danger]="getFieldValid('city')"
+                >
+                  <label for=""
+                    ><strong>Ciudad</strong
+                    ><span class="font-13 text-muted"></span
+                  ></label>
+                  <select class="form-select" aria-label="Default select example" formControlName="city" [class.form-select-danger]="getFieldValid('city')"> 
+                    <option selected [ngValue]="null" hidden>Seleccione</option>
+                    <option [value]="item.id" *ngFor="let item of cityCombo">{{item.text}}</option>
+                </select>
+                  <div
+                    class="form-control-feedback"
+                    *ngIf="getFieldValid('city')"
+                  >
+                    *Ingrese la ciudad
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="animated fadeIn" *ngIf="step === 'two'">
+        <div class="card-body">
+          <div class="row">
+            <div
+              class="form-group col-md-6 m-t-5 m-b-5"
+              [class.has-danger]="getFieldValid('legalGuardianName')"
+            >
+              <label for=""><strong>Nombre</strong></label>
+              <input
+                type="text"
+                class="form-control form-control-line"
+                placeholder="Ingrese un nombre"
+                formControlName="legalGuardianName"
+                [class.form-control-danger]="getFieldValid('legalGuardianName')"
+              />
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('legalGuardianName')"
+              >
+                *Ingrese el nombre
+              </div>
+            </div>
+            <div
+              class="form-group col-md-6 m-t-5 m-b-5"
+              [class.has-danger]="getFieldValid('legalGuardianLastName')"
+            >
+              <label for=""><strong>Apellido</strong></label>
+              <input
+                type="text"
+                class="form-control form-control-line"
+                placeholder="Ingrese un apellido"
+                formControlName="legalGuardianLastName"
+                [class.form-control-danger]="
+                  getFieldValid('legalGuardianLastName')
+                "
+              />
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('legalGuardianLastName')"
+              >
+                *Ingrese el apellido
+              </div>
+            </div>
+            <div
+              class="form-group col-md-6 m-t-5 m-b-5"
+              [class.has-danger]="getFieldValid('legalGuardianPhone')"
+            >
+              <label for=""><strong>Teléfono</strong></label>
+              <input
+                type="text"
+                class="form-control form-control-line"
+                placeholder="Ingrese un teléfono"
+                formControlName="legalGuardianPhone"
+                [class.form-control-danger]="
+                  getFieldValid('legalGuardianPhone')
+                "
+              />
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('legalGuardianPhone')"
+              >
+                *Ingrese el teléfono
+              </div>
+            </div>
+            <div
+              class="form-group col-md-6 m-t-5 m-b-5"
+              [class.has-danger]="getFieldValid('legalGuardianEmail')"
+            >
+              <label for=""><strong>Email</strong></label>
+              <input
+                type="email"
+                class="form-control form-control-line"
+                placeholder="Ingrese un email"
+                formControlName="legalGuardianEmail"
+                [class.form-control-danger]="
+                  getFieldValid('legalGuardianEmail')
+                "
+              />
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('legalGuardianEmail')"
+              >
+                *Ingrese el email
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="animated fadeIn" *ngIf="step === 'three'">
+        <div class="card-body">
+          <div class="row">
+            <div
+              class="form-group col-md-3 m-t-4 m-b-5"
+              [class.has-danger]="getFieldValid('personalHistoryBirthWeight')"
+            >
+              <label for=""
+                ><strong>Peso</strong
+                ><span class="font-13 text-muted"> (Kg)</span></label
+              >
+              <input
+                type="number"
+                class="form-control form-control-line"
+                placeholder="Ingrese el peso"
+                formControlName="personalHistoryBirthWeight"
+                [class.form-control-danger]="
+                  getFieldValid('personalHistoryBirthWeight')
+                "
+              />
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('personalHistoryBirthWeight')"
+              >
+                *Ingrese el peso
+              </div>
+            </div>
+            <div
+              class="form-group col-md-3 m-t-4 m-b-5"
+              [class.has-danger]="getFieldValid('personalHistoryApgar')"
+            >
+              <label for=""
+                ><strong>Apgar</strong
+                ><span class="font-13 text-muted"> (/100)</span></label
+              >
+              <input
+                type="number"
+                class="form-control form-control-line"
+                placeholder="Ingrese el APGAR"
+                formControlName="personalHistoryApgar"
+                [class.form-control-danger]="
+                  getFieldValid('personalHistoryApgar')
+                "
+              />
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('personalHistoryApgar')"
+              >
+                *Ingrese el APGAR
+              </div>
+            </div>
+            <div
+              class="form-group col-md-6 m-t-4 m-b-5"
+            >
+              <div class="col">
+                <label for=""
+                  ><strong>Alergias</strong
+                  ><span class="font-13 text-muted"></span
+                ></label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control form-control-line"
+                    placeholder="Ingrese una alergia"
+                    #allergie
+                    (keyup.enter)="addAllergie(allergie)"
+                  />
+                  <div
+                    class="input-group-addon pointer bg-success"
+                    (click)="addAllergie(allergie)"
+                  >
+                    <i class="fas fa-plus text-white"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="table-responsive animated fadeIn mt-1" style="padding-left: 15px;padding-right: 15px;" *ngIf="allergies.length!==0">
+                <table class="table table-hover table-bordered">
+                    <tbody>
+                        <tr *ngFor="let allergie of allergies; let i = index">
+                            <td width="70%">{{allergie}}</td>
+                            <td width="30%"class="text-center">
+                                <button type="button" (click)="deleteAllergie(i)" class="btn btn-danger badge m-1">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="animated fadeIn" *ngIf="step === 'four'">
+        <div class="card-body">
+          <div class="row">
+            <div
+              class="form-group col-md-6 m-t-4 m-b-5"
+              [class.has-danger]="getFieldValid('familyHistoryPregnancyHistory')"
+            >
+              <label for=""
+                ><strong>Embarazo</strong
+                ><span class="font-13 text-muted"></span></label
+              >
+              <textarea
+                type="text"
+                class="form-control form-control-line"
+                rows="4"
+                placeholder="Ingrese datos del embarazo"
+                formControlName="familyHistoryPregnancyHistory"
+                [class.form-control-danger]="
+                  getFieldValid('familyHistoryPregnancyHistory')
+                "
+              ></textarea>
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('familyHistoryPregnancyHistory')"
+              >
+                *Ingrese datos del embarazo
+              </div>
+            </div>
+            <div
+              class="form-group col-md-6 m-t-4 m-b-5"
+              [class.has-danger]="getFieldValid('familyHistoryGynaecologist')"
+            >
+              <label for=""
+                ><strong>Ginecólogo</strong
+                ><span class="font-13 text-muted"></span></label
+              >
+              <textarea
+                type="text"
+                class="form-control form-control-line"
+                rows="4"
+                placeholder="Ingrese datos del ginecólogo"
+                formControlName="familyHistoryGynaecologist"
+                [class.form-control-danger]="
+                  getFieldValid('familyHistoryGynaecologist')
+                "
+              ></textarea>
+              <div
+                class="form-control-feedback"
+                *ngIf="getFieldValid('familyHistoryGynaecologist')"
+              >
+                *Ingrese datos del ginecólogo
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="form-group col-md-12 text-center" style="margin-top: 2vh">
+    <button class="btn btn-outline-primary mr-1" (click)="createPatient()">
+      <i class="fas fa-edit"></i> Guardar
+    </button>
+    <button class="btn btn-outline-danger">
+      <i class="fas fa-times-circle"></i> Cancelar
+    </button>
+  </div>
+</div>

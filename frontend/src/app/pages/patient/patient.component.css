@@ -1,0 +1,8 @@
+.bg-error{
+    border-color: #ef5350;
+    border-width: 2px
+}
+.form-select-danger{
+    border-color: #ef5350;
+    border-width: 1px
+}

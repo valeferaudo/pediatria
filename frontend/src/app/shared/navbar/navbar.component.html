@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg sticky-top" style="background-color: #9a616d">
+  <a class="navbar-brand abs font-bold ml-1" href="/doctor/home">Medicina Online</a>
+  <!-- BUTTON TOGGLE aparece en responsive -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" >
+          <a class="nav-link font-bold" style="color: #000;" [routerLink]="['/doctor/appointments']" >Turnos</a>
+      </li>
+        <li class="nav-item" routerLinkActive="active" >
+            <a class="nav-link font-bold" style="color: #000;" [routerLink]="['/doctor','patients']">Pacientes</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active" >
+            <a class="nav-link font-bold" style="color: #000;" [routerLink]="['/doctor/pathologies']">Patologías</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active" >
+          <a class="nav-link font-bold" style="color: #000;" [routerLink]="['/doctor/home']">Consultas</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav mr-auto mr-sm-2">
+      <li class="nav-item dropdown pointer">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-user-cog"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" style="color: #000;" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item"><i class="fas fa-wrench"></i> Editar Perfil</a>
+          <a class="dropdown-item text-danger pointer" (click)="logOut()"><i class="fa fa-power-off"></i> Cerrar sesión</a>
+        </div>
+      </li>
+      </ul>
+    </div>
+</nav>

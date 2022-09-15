@@ -78,7 +78,16 @@ authCtrl.renewToken = async (req, res) => {
 
   // OBTENER USUARIO
   const doctorDB = await Doctor.findById(uid, {
-    uid: 1, name: 1, lastName: 1, address: 1, phone: 1, email: 1, role: 1,
+    uid: 1,
+    name: 1,
+    lastName: 1,
+    birthDate: 1,
+    address: 1,
+    phone: 1,
+    email: 1,
+    deletedDate: 1,
+    timeTable: 1,
+    role: 1,
   });
   if (!doctorDB) {
     return console.log('NO ENCUENTRA USUARIO');
@@ -87,9 +96,12 @@ authCtrl.renewToken = async (req, res) => {
     uid: doctorDB.id,
     name: doctorDB.name,
     lastName: doctorDB.lastName,
+    birthDate: doctorDB.birthDate,
     address: doctorDB.address,
     phone: doctorDB.phone,
     email: doctorDB.email,
+    deletedDate: doctorDB.deletedDate,
+    timeTable: doctorDB.timeTable,
     role: doctorDB.role,
   };
   return res.json({
