@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Patient } from 'src/app/models/patient.model';
 import { SweetAlertService } from 'src/app/services/sweet-alert.service';
 import { PatientService } from 'src/app/services/patient.service';
 import { ErrorsService } from 'src/app/services/errors.service';
 import { CityService } from 'src/app/services/city.service';
 import { Combo } from 'src/app/interfaces/combo.interface';
+import { Consultation } from '../../models/consultation.model';
+import { ConsultationService } from '../../services/consultation.service';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
   selector: 'app-patient',
@@ -23,126 +26,97 @@ export class PatientComponent implements OnInit {
   patient: Patient;
   allergies: string[] = [];
   cityCombo: Combo [] = []
+  mode: 'edit' | 'create' = null;
+
+  patientID: string = null
+  consultations: Consultation[] = [];
+  totalPages = null;
+  page = 1;
+  hiddenNewCityModal: boolean = false;
 
   constructor(private fb: FormBuilder, 
             private router: Router, 
             private sweetAlertService: SweetAlertService, 
             private patientService: PatientService,
+            private consultationService: ConsultationService,
+            private route: ActivatedRoute,
             private errorService: ErrorsService,
+            private loaderService: LoaderService,
             private cityService: CityService) {
     this.createForm();
     this.onPatientFormChange();
   }
 
   ngOnInit(): void {
+    this.getParam()
     this.getCombo();
   }
-
+  getParam(){
+    this.route.params
+    .subscribe(params => {
+      if(params.id){
+        this.mode = 'edit'
+        this.patientID = params.id
+        this.getPatient(params.id)
+        this.getPatientConsultations();
+      }else{
+        this.mode = 'create'
+      }
+    }
+  );
+  }
+  getPatient(id){
+    this.loaderService.openLineLoader()
+    this.patientService.getPatient(id)
+                .subscribe((resp: any) =>{
+                  if(resp.ok){
+                    this.loaderService.closeLineLoader()
+                    this.patient = resp.param.patient;
+                    this.fillForm();
+                  }
+                },(err) => {
+                  console.log(err);
+                  this.loaderService.closeLineLoader()
+                  this.errorService.showErrors(err.error.code,err.error.msg);
+                })
+  }
+  fillForm(){
+    this.patientForm.patchValue({
+      name: this.patient?.name,
+      lastName: this.patient?.lastName,
+      dni: this.patient?.dni,
+      birthDate: this.patient?.birthDate?.split('T')[0],
+      street: this.patient?.address?.street,
+      streetNumber: this.patient?.address?.number,
+      city: this.patient?.city,
+      legalGuardianName: this.patient?.legalGuardian?.name,
+      legalGuardianLastName: this.patient?.legalGuardian?.lastName,
+      legalGuardianPhone: this.patient?.legalGuardian?.phone,
+      legalGuardianEmail: this.patient?.legalGuardian?.email,
+      pregnancyHistoryBirthWeight: this.patient?.pregnancyHistory?.birthWeight,
+      pregnancyHistoryApgar: this.patient?.pregnancyHistory?.apgar,
+      pregnancyHistoryAllergies: this.patient?.pregnancyHistory?.allergies,
+      personalHistoryPregnancy: this.patient?.personalHistory?.pregnancy,
+    })
+    this.allergies = [...this.patient.pregnancyHistory.allergies]
+  }
   createForm() {
     this.patientForm = this.fb.group({
-      name: [
-        { value: this.patient?.name, disabled: this.patient !== undefined },
-        [Validators.required],
-      ],
-      lastName: [
-        { value: this.patient?.lastName, disabled: this.patient !== undefined },
-        [Validators.required],
-      ],
-      dni: [
-        { value: this.patient?.dni, disabled: this.patient !== undefined },
-        [Validators.required],
-      ],
-      birthDate: [
-        {
-          value: this.patient?.birthDate,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      street: [
-        {
-          value: this.patient?.address.street,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      streetNumber: [
-        {
-          value: this.patient?.address.number,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      city: [
-        {
-          value: this.patient?.address.city,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      legalGuardianName: [
-        {
-          value: this.patient?.legalGuardian.name,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      legalGuardianLastName: [
-        {
-          value: this.patient?.legalGuardian.lastName,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      legalGuardianPhone: [
-        {
-          value: this.patient?.legalGuardian.phone,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      legalGuardianEmail: [
-        {
-          value: this.patient?.legalGuardian.email,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      personalHistoryBirthWeight: [
-        {
-          value: this.patient?.personalHistory.birthWeight,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      personalHistoryApgar: [
-        {
-          value: this.patient?.personalHistory.apgar,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      personalHistoryAllergies: [
-        {
-          value: this.patient?.personalHistory.allergies,
-          disabled: this.patient !== undefined,
-        },
-        [Validators.required],
-      ],
-      familyHistoryPregnancyHistory: [
-        {
-          value: this.patient?.familyHistory.pregnancyHistory,
-          disabled: this.patient !== undefined,
-        },
-        [],
-      ],
-      familyHistoryGynaecologist: [
-        {
-          value: this.patient?.familyHistory.gynaecologist,
-          disabled: this.patient !== undefined,
-        },
-        [],
-      ],
+      name: ['',[Validators.required],],
+      lastName: ['',[Validators.required],],
+      dni: ['',[Validators.required],],
+      birthDate: ['',[],],
+      street: ['',[],],
+      streetNumber: ['',[],],
+      city: ['',[],],
+      legalGuardianName: ['',[],],
+      legalGuardianLastName: ['',[],],
+      legalGuardianPhone: ['',[],],
+      legalGuardianEmail: ['',[],],
+      pregnancyHistoryBirthWeight: ['',[],],
+      pregnancyHistoryApgar: ['',[],],
+      pregnancyHistoryAllergies: ['',[],],
+      personalHistoryPregnancy: ['',[],],
     });
   }
   showStep(step: 'one' | 'two' | 'three' | 'four') {
@@ -174,8 +148,8 @@ export class PatientComponent implements OnInit {
       this.stepTwo = true;
     }
     if (
-      this.patientForm.controls.personalHistoryBirthWeight.errors !== null ||
-      this.patientForm.controls.personalHistoryApgar.errors !== null
+      this.patientForm.controls.pregnancyHistoryBirthWeight.errors !== null ||
+      this.patientForm.controls.pregnancyHistoryApgar.errors !== null
     ) {
       this.stepThree = true;
     }
@@ -198,7 +172,7 @@ export class PatientComponent implements OnInit {
         this.stepTwo = false;
       });
     });
-    const controlStep3 = ['personalHistoryBirthWeight','personalHistoryApgar'];
+    const controlStep3 = ['pregnancyHistoryBirthWeight','pregnancyHistoryApgar'];
     controlStep3.forEach(element => {
       this.patientForm.get(element).valueChanges.subscribe((val) => {
         this.stepThree = false;
@@ -206,9 +180,53 @@ export class PatientComponent implements OnInit {
     });
 
   }
+  submitForm(){
+    if(this.mode === 'create'){
+      this.createPatient()    
+    }else if (this.mode === 'edit'){
+      this.updatePatient();
+    }
+  }
+  updatePatient() {
+    this.getStepValid();
+    if (this.patientForm.invalid) {
+      Object.values(this.patientForm.controls).forEach((control) => {
+        control.markAsTouched();
+      });
+      return;
+    }
+    this.sweetAlertService.showSwalConfirmation({
+      title: '¿Actualizar paciente?',
+      text: ``,
+      icon: 'question'})
+    .then((result) => {
+      if (result.value) {
+        this.loaderService.openLineLoader()
+        this.patientService.updatePatient(this.patient._id,this.patientForm.value)
+                    .subscribe((resp: any) =>{
+                      if(resp.ok){
+                        this.loaderService.closeLineLoader()
+                        this.sweetAlertService.showSwalResponse({
+                          title: 'Paciente Actualizado',
+                          text:'',
+                          icon: 'success'
+                        })
+                        if((this.router.url).split("/").includes("consultation")){
+                          this.router.navigate([`/doctor/consultation/${this.patient._id}`])
+                        }
+                        else {
+                          this.router.navigate([`/doctor/patients`])
+                        }
+                      }},(err)=>{
+                      console.log(err);
+                      this.loaderService.closeLineLoader()
+                      this.errorService.showErrors(err.error.code,err.error.msg);
+                    })
+      }
+    })
+  }
   createPatient() {
     this.getStepValid();
-    console.log(this.patientForm);
     if (this.patientForm.invalid) {
       Object.values(this.patientForm.controls).forEach((control) => {
         control.markAsTouched();
@@ -221,16 +239,20 @@ export class PatientComponent implements OnInit {
       icon: 'question'})
     .then((result) => {
       if (result.value) {
+        this.loaderService.openLineLoader()
         this.patientService.createPatient(this.patientForm.value)
                     .subscribe((resp: any) =>{
                       if(resp.ok){
+                        this.loaderService.closeLineLoader()
                         this.sweetAlertService.showSwalResponse({
                           title: 'Paciente dado de alta',
                           text:'',
                           icon: 'success'
                         })
-                    }},(err)=>{
+                        this.router.navigate([`/doctor/patients`])
+                      }},(err)=>{
                       console.log(err);
+                      this.loaderService.closeLineLoader()
                       this.errorService.showErrors(err.error.code,err.error.msg);
                     })
       }
@@ -243,25 +265,61 @@ export class PatientComponent implements OnInit {
       }
     }
     this.patientForm.patchValue({
-      personalHistoryAllergies: this.allergies
+      pregnancyHistoryAllergies: this.allergies
     })
     allergie.value = '';
   }
   deleteAllergie(index: number) {
     this.allergies.splice(index, 1);
     this.patientForm.patchValue({
-      personalHistoryAllergies: this.allergies
+      pregnancyHistoryAllergies: this.allergies
     })
   }
   getCombo() {
+    this.loaderService.openLineLoader()
     this.cityService.getCombo()
                       .subscribe((resp: any) => {
                         if(resp.ok){
+                          this.loaderService.closeLineLoader()
                           this.cityCombo = resp.param.combo
                         }
                       },(err)=>{
                         console.log(err);
+                        this.loaderService.closeLineLoader()
                         this.errorService.showErrors(err.error.code,err.error.msg);
                       })
+  }
+  getPatientConsultations(){
+    this.loaderService.openLineLoader()
+    this.consultationService.getPatientConsultations(this.patientID,this.page)
+     .subscribe((resp:any)=>{
+       if(resp.ok){
+        this.loaderService.closeLineLoader()
+        this.patient = resp.param.patient;
+        this.consultations = resp.param.consultations;
+        this.page = resp.param.paginator.page;
+        this.totalPages = resp.param.paginator.totalPages;
+       }
+     }, (err) => {
+       console.log(err)
+       this.loaderService.closeLineLoader()
+       this.errorService.showErrors(err.error.code,err.error.msg);
+     })
+  }
+  openOldConsultationModal(consultation){
+    this.router.navigate(['doctor','consultation-edit',consultation._id])
+  }
+  cancel(){
+    this.fillForm();
+  }
+
+  newCity(value){
+    if(value === 'newCity'){
+      console.log("modal")
+      this.hiddenNewCityModal = true
+    }
+  }
+  closeModal(){
+    this.hiddenNewCityModal = false;
   }
 }

@@ -1,0 +1,64 @@
+<div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="card-title"><strong>Listado de consultas </strong></h2>
+        </div>
+        <div class="col-md-6">
+            <button class="btn btn-dark new pull-right" (click)="createConsultationModal()"><i class="fa fa-plus"></i> Nueva</button>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="table-responsive animated fadeIn" *ngIf="consultations.length!==0">
+    <table id="myTable" class="table table-hover color-table inverse-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Paciente</th>
+                <th>Fecha</th>
+                <th>Motivo</th>
+                <th>Indicación</th>
+                <th class="text-center">Acción</th>
+            </tr>
+        </thead>
+        <tbody class="animated fadeIn">
+            <tr *ngFor="let consultation of consultations; let i = index">
+                <td>{{((page -1) * 6) + i+1}}</td>
+                <td>{{consultation?.patient?.name}} {{consultation?.patient?.lastName}}</td>
+                <td>{{consultation?.dateTime | date: 'dd/MM/yyyy'}}</td>
+                <td>{{consultation?.symptomDescription | longTextPipe}}</td>
+                <td>{{consultation?.treatmentDescription | longTextPipe}}</td>
+                <td class="text-center">
+                    <button (click)="updateConsultationModal(consultation)"  class="btn badge btn-info m-1 text-center" data-toggle="tooltip" data-placement="top" title="Editar">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="alert alert-danger animated fadeIn" role="alert" *ngIf="consultations.length === 0"> 
+    <i class="fas fa-times"></i> No se encontraron <strong>Consultas</strong>
+</div>
+<div class="row" *ngIf="consultations.length!==0 && totalPages > 1">
+    <div class="col-md-12 text-center">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                <button class="page-link text-dark btn-paginator pointer" *ngIf="page !== 1" [disabled]="page === 1" (click)="paginate(1)"><i class="fas fa-backward"></i></button>
+                </li>
+                <li class="page-item" *ngIf="page !== 1" (click)="paginate(page - 1)"><a class="page-link pointer">{{page - 1 }}</a></li>
+                <li class="page-item" [class.active]="page === page">
+                <a class="page-link">{{page}}</a>
+                </li>
+                <li class="page-item" *ngIf="totalPages >= 2 && page !== totalPages" (click)="paginate(page + 1)"><a class="page-link pointer">{{page + 1}}</a></li>
+                <li class="page-item" *ngIf="page !== totalPages">
+                <button class="page-link text-dark btn-paginator pointer" [disabled]="page === totalPages" (click)="paginate(totalPages)"><i class="fas fa-forward"></i></button>
+                </li>
+            </ul>
+    </div>
+</div>
+
+<app-line-loader></app-line-loader>
+<app-old-consultation-modal *ngIf="hiddenOldConsultationModal" [hiddenOldConsultationModal]="!hiddenOldConsultationModal" [mode]="modalMode" [consultationSelected]="consultationSelected"
+(closeModal)="closeModal()" (getConsultations)="getConsultations()">
+

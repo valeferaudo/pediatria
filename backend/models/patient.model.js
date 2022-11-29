@@ -6,36 +6,29 @@ const PatientSchema = new Schema({
   name: { type: String, required: true },
   lastName: { type: String, required: true },
   dni: { type: Number, required: true, unique: true },
-  birthDate: { type: Date, required: true },
+  birthDate: { type: Date },
   address: {
-    street: { type: String, required: true },
-    number: { type: Number, required: true },
-    city: { type: Schema.Types.ObjectId, ref: 'City', required: true },
+    street: { type: String },
+    number: { type: Number },
   },
+  city: { type: Schema.Types.ObjectId, ref: 'City' },
   legalGuardian: {
-    name: { type: String, required: true },
-    lastName: { type: String, required: true },
-    phone: { type: Number, required: true },
-    email: { type: String, required: true },
+    name: { type: String },
+    lastName: { type: String },
+    phone: { type: Number },
+    email: { type: String },
   },
-  personalHistory: {
+  pregnancyHistory: {
     birthWeight: { type: Number },
     apgar: { type: Number },
     allergies: [{ type: String }],
   },
-  familyHistory: {
-    pregnancyHistory: { type: String },
-    gynaecologist: { type: String },
-
+  personalHistory: {
+    pregnancy: { type: String },
   },
+  lastVisit: { type: Date, default: null },
   createdDate: { type: Date },
   deletedDate: { type: Date, default: null },
 }, { collection: 'patients' });
-
-PatientSchema.method('toJSON', () => {
-  const { __v, _id, ...object } = this.toObject();
-  object.id = _id;
-  return object;
-});
 
 module.exports = model('Patient', PatientSchema);

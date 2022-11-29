@@ -104,8 +104,8 @@ export class ErrorsService {
         this.errorMsg='Por favor, ingrese los datos nuevamente';
         break;
       case 24:
-        this.errorTitle='Centro deportivo bloqueado';
-        this.errorMsg='No se puede activar una cancha de un centro deportivo bloqueado.';
+        this.errorTitle='Faltan datos';
+        this.errorMsg='Complete los datos obligatorios';
         break;
 
 

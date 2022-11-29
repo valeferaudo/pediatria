@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { InterceptorService } from './services/interceptor.service';
+import { ComponentsModule } from './components/components.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { InterceptorService } from './services/interceptor.service';
     HttpClientModule,
     PagesModule,
     SharedModule,
+    ComponentsModule
   ],
   providers: [
     {

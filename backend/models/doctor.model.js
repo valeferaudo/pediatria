@@ -7,7 +7,7 @@ const DoctorSchema = new Schema({
   lastName: { type: String, required: true },
   phone: { type: Number, required: true },
   dni: { type: Number, required: true, unique: true },
-  birthDate: { type: Date, required: true },
+  birthDate: { type: Date },
   address: {
     street: { type: String },
     number: { type: Number },
@@ -18,11 +18,11 @@ const DoctorSchema = new Schema({
   },
   password: { type: String, required: true },
   role: {
-    type: String, enum: ['ADMIN', 'DOCTOR'], default: 'DOCTOR', required: true,
+    type: String, enum: ['ADMIN', 'DOCTOR'], default: 'DOCTOR',
   },
   deletedDate: { type: Date, default: null },
   timeTable: [{
-    institution: { type: Schema.Types.ObjectId, ref: 'Institution', required: true },
+    institution: { type: Schema.Types.ObjectId, ref: 'Institution' },
     day: { type: Number, enum: [1, 2, 3, 4, 5, 6, 7], default: null },
     startHour: { type: Date, default: null },
     endHour: { type: Date, default: null },

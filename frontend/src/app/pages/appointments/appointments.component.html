@@ -1,1 +1,118 @@
-<p>appointments works!</p>
+<div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="card-title"><strong>Turnos </strong></h2>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="col-12 mb-2" >
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <div class="dropdown h-100" class="statusDropdownContainer">
+                <a class="btn btn-white dropdown-toggle mb-2 statusFilterDropdown h-100 flex-middle" href="#" role="button"
+                    id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="text-truncate">{{selectedValuePatient || 'Paciente'}}</span>
+                </a>
+                <div class="dropdown-menu w-100 pt-0" aria-labelledby="dropdownMenuButton">
+                    <input type="text" class="w-100 p-2 searchInput" placeholder="Buscar.." [ngModel]="searchValuePatient" (ngModelChange)="filterDropdownPatient($event)">
+                    <button class="btn btn-dark new" style="width: 100%;" (click)="openNewPatientModal()"><i class="fa fa-plus"></i> Nuevo</button>
+                    <a *ngFor="let option of patientsFiltered; let i=index" class="dropdown-item pointer text-contain"
+                        [ngClass]="{'alternateBackground': i%2 == 0 }" (click)="selectValuePatient(option)">
+                        {{option.text}}
+                    </a>
+                    <div *ngIf="patientsFiltered?.length===0" class="text-center text-muted mt-1">No se encontraron pacientes</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <div class="wrapper-calendar">
+                        <div class="header-calendar" style="text-align: center">
+                            <div>
+                                <button (click)="changeMonth(-1)" class="btn btn-outline-dark new"><i class="fas  fa-backward"></i> Antes</button>
+                            </div>
+                            <h1 class="font-bold">{{dateSelect | date:'MMMM' | dateString}}</h1>
+                            <div>
+                                <button (click)="changeMonth(1)" class="btn btn-outline-dark new">Siguiente <i class="fas  fa-forward"></i></button>
+                            </div>
+                        </div>
+                        <ol style="text-align: center">
+                            <li *ngFor="let day of week" class="day-name">{{day | slice:0:3}}</li>
+                    
+                            <li (click)="clickDay(day)" [style.gridColumnStart]="first ? day?.indexWeek : 'auto'"
+                             *ngFor="let day of monthSelect;let first = first" class="day">
+                                <span [ngStyle]="{'text-decoration': day?.value === today.getDate() && dateSelect._d.getMonth() === today.getMonth()? 'underline': 'none','font-weight': day?.value === today.getDate() && dateSelect._d.getMonth() === today.getMonth()? 'bold': ''}" 
+                                     [ngClass]="{'badge badge-info': day?.value === selectedDate.getDate() && dateSelect._d.getMonth() === selectedDate.getMonth()}">{{day?.value}}</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xs-12  text-center">
+                    <h6 class="font-bold">Turnos <br> {{selectedDate | date}}</h6>
+                    <button class="btn btn-outline-dark m-2" 
+                            [ngClass]="{'active': timeSelected === item}"
+                            (click)="clickHour(item)"
+                            *ngFor="let item of availables">
+                            {{item | date:'HH:mm':'-3'}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <button class="btn btn-dark new text-center" (click)="createAppointment()">Crear</button>
+    </div>
+    <div class="row text-center">
+        <span class="error-msg" *ngIf="patientError">*Seleccione un paciente</span>
+        <span class="error-msg" *ngIf="timeError">*Seleccione una hora</span>
+    </div>
+</div>
+<hr *ngIf="createMode">
+<h4>Reservados</h4>
+<div class="row">
+    <div class="col-12 text-center">
+        <i (click)="getBeforeAppointments()" class="fas  fa-backward pointer"></i>
+        <span class="ml-2 mr-2 font-bold">{{selectedDate | date: 'dd/MM/yyyy'}}</span>
+        <i (click)="getNextAppointments()" class="fas  fa-forward pointer"></i>
+    </div>
+</div>
+<div class="alert alert-danger animated fadeIn" role="alert" *ngIf="appointments.length===0" > 
+  <i class="fas fa-times"></i> No se encontraron turnos para la fecha.
+</div>
+<div style="overflow-x: auto;">
+  <table *ngIf="appointments.length!==0" class="table table-striped">
+      <thead [ngClass]="{'bg-reserved':appointments[0].state==='Reserved','bg-completed':appointments[0].state==='Completed','bg-inProgress':appointments[0].state==='InProgress','bg-aboutToStart':appointments[0].state==='AboutToStart'}">
+        <tr [ngClass]="{'text-dark':appointments[0].state==='Reserved','text-dark':appointments[0].state==='Completed','text-dark':appointments[0].state==='InProgress','text-dark':appointments[0].state==='AboutToStart'}">
+          <th class="text-center" scope="col">#</th>
+          <th class="text-center" scope="col">Paciente</th>
+          <th class="text-center" scope="col">Día</th>
+          <th class="text-center" scope="col">Horario</th>
+          <th class="text-center" scope="col">Estado</th>
+          <th class="text-center" scope="col">Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of appointments; let i=index">
+          <th class="text-center" scope="row">{{i+1}}</th>
+          <td class="text-center" >{{item.patient.name}} {{item.patient.lastName}}</td>
+          <td class="text-center" >{{item.date | date:"dd-MM-yyyy":'+0'}}</td>
+          <td class="text-center" >{{item.date | date:'HH:mm':'+0'}}</td>
+          <td class="text-center" >
+            <i class="fas fa-pause-circle text-warning" *ngIf="item.status === 'Reserved'"></i>
+            <i class="fas fa-check-circle text-success" *ngIf="item.status === 'Completed'"></i>
+          </td>
+          <td class="text-center">
+            <button (click)="cancelAppointment(item)" class="btn btn-sm bg-danger m-1" data-toggle="tooltip" data-placement="top" title="Cancelar">
+                <i class="fas fa-trash-alt pointer text-white"></i>
+            </button>
+            <button (click)="goConsultation(item.patient)" style="background-color: #ffab2e" class="btn btn-sm m-1"  data-toggle="tooltip" data-placement="top" title="Avanzar">
+                <i class="fa fa-user-md text-white"></i>
+          </button>
+          </td>
+        </tr>
+      </tbody>
+  </table>
+  <app-line-loader></app-line-loader>
+</div>
+<app-new-patient-modal *ngIf="hiddenModal" [hiddenModal]="!hiddenModal" (closeModal)="closeModal()" (getPatients)="getPatientCombo()">

@@ -1,0 +1,380 @@
+<div>
+    <div class="row text-center">
+      <div class="col-md-10">
+        <h3 class="card-title"> Paciente: <strong>Valentín Feraudo </strong></h3>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-sm btn-outline-dark float-right" (click)="editPatient()"><i class="fas fa-edit"></i></button>
+      </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-6 middle-border" >
+        <div class="row">
+            <div class="card m-0">
+              <div class="row card-header">
+                <div class="col-sm-6 col-md-3">
+                  <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    (click)="showStep('one')"
+                    [class.active]="step === 'one'"
+                    [class.bg-error]="stepOne"
+                    style="
+                      width: 100%;
+                      white-space: normal;
+                      word-wrap: break-word;
+                      height: 100%;
+                    "
+                  >
+                    Datos Personales
+                  </button>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                  <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    (click)="showStep('two')"
+                    [class.active]="step === 'two'"
+                    [class.bg-error]="stepTwo"
+                    style="
+                      width: 100%;
+                      white-space: normal;
+                      word-wrap: break-word;
+                      height: 100%;
+                    "
+                  >
+                    Padre - Madre - Tutor
+                  </button>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                  <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    (click)="showStep('three')"
+                    [class.active]="step === 'three'"
+                    [class.bg-error]="stepThree"
+                    style="
+                      width: 100%;
+                      white-space: normal;
+                      word-wrap: break-word;
+                      height: 100%;
+                    "
+                  >
+                    Antecedentes Embarazo
+                  </button>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                  <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    (click)="showStep('four')"
+                    [class.active]="step === 'four'"
+                    [class.bg-error]="stepFour"
+          
+                    style="
+                      width: 100%;
+                      white-space: normal;
+                      word-wrap: break-word;
+                      height: 100%;
+                    "
+                  >
+                    Antecedentes Personales
+                  </button>
+                </div>
+              </div>
+              <form autocomplete="off">
+                <div class="animated fadeIn" *ngIf="step === 'one'">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="form-group col-md-4 m-t-5 m-b-5">
+                        <label for=""><strong>Nombre: </strong> {{patient?.name || 'Sin datos'}}</label>
+                      </div>
+                      <div class="form-group col-md-4 m-t-5 m-b-5">
+                        <label for=""><strong>Apellido: </strong> {{patient?.lastName || 'Sin datos'}}</label>
+                      </div>
+                      <div class="form-group col-md-4 m-t-5 m-b-5">
+                        <label for=""><strong>DNI: </strong> {{patient?.dni || 'Sin datos'}}</label>
+                      </div>
+                      <div class="form-group col-md-5 m-t-5 m-b-5">
+                        <label for=""><strong>Nacimiento: </strong> {{patient?.birthDate | date:"dd/MM/yyyy":'+0' || 'Sin datos'}} <br> <small class="font-weight-light">({{patient?.birthDate | getAgePipe}})</small></label>
+                      </div>
+                        <div class="form-group col-md-7 m-t-5 m-b-5">
+                            <label for=""><strong>Calle: </strong> {{patient?.address?.street || 'Sin datos'}} {{patient?.address?.number}} <span *ngIf="patient?.city !== null">({{patient?.city?.name}})</span></label>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="animated fadeIn" *ngIf="step === 'two'">
+                  <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-6 m-t-5 m-b-5">
+                            <label for=""><strong>Nombre: </strong> {{patient?.legalGuardian?.name || 'Sin datos'}}</label>
+                          </div>
+                          <div class="form-group col-md-6 m-t-5 m-b-5">
+                            <label for=""><strong>Apellido: </strong> {{patient?.legalGuardian?.lastName || 'Sin datos'}}</label>
+                          </div>
+                          <div class="form-group col-md-6 m-t-5 m-b-5">
+                            <label for=""><strong>Teléfono: </strong> {{patient?.legalGuardian?.phone || 'Sin datos'}}</label>
+                          </div>
+                          <div class="form-group col-md-6 m-t-5 m-b-5">
+                            <label for=""><strong>Email: </strong> {{patient?.legalGuardian?.email || 'Sin datos'}}</label>
+                          </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="animated fadeIn" *ngIf="step === 'three'">
+                  <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-6 m-t-5 m-b-5">
+                            <label for=""><strong>Peso: </strong> {{patient?.pregnancyHistory?.birthWeight || '-'}} kg.</label>
+                          </div>
+                          <div class="form-group col-md-6 m-t-5 m-b-5">
+                            <label for=""><strong>Apgar: </strong> {{patient?.pregnancyHistory?.apgar || '-'}} / 100</label>
+                          </div>
+                          <div class="form-group col-md-12 m-t-5 m-b-5">
+                            <label for=""><strong>Alergias: </strong> {{patient?.pregnancyHistory?.allergies || 'Sin datos'}}</label>
+                          </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="animated fadeIn" *ngIf="step === 'four'">
+                  <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-12 m-t-5 m-b-5">
+                            <label for=""><strong>Embarazo: </strong> {{patient?.personalHistory?.pregnancy || 'Sin datos'}}</label>
+                          </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        <div class="row">
+            <div class="card mt-1">
+              <h6 class="card-title mt-1 text-center text-underline"><strong>Consultas anteriores </strong></h6>
+             <div *ngFor="let consultation of consultations" class="m-1">
+                <button class="btn btn-dark btn-block" type="button" data-toggle="collapse" [attr.data-target]="'#' + consultation._id" aria-expanded="false" aria-controls="collapseExample">
+                  {{consultation.dateTime | date:"dd/MM/yyyy"}} - {{consultation.institution.name}}
+                </button>
+              <div class="collapse" [id]="consultation._id">
+                <div class="card card-block">
+                  <div class="row">
+                    <div class="form-group col-md-12 m-1">
+                      <label for=""><strong>Motivo: </strong><br> {{consultation.symptomDescription}}</label>
+                    </div>
+                    <div class="form-group col-md-12 m-1">
+                      <label for=""><strong>Indicación: </strong><br> {{consultation.treatmentDescription}}</label>
+                    </div>
+                    <div class="form-group col-md-12 m-1 text-center">
+                      <button class="btn btn-outline-dark" (click)="openOldConsultationModal(consultation)"><i class="fa fa-info-circle"></i> Ver completa</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+             </div>
+             <div class="row" *ngIf="consultations.length!==0 && totalPages > 1">
+              <div class="col-md-12 text-center">
+                      <ul class="pagination justify-content-center">
+                          <li class="page-item">
+                          <button class="page-link text-dark btn-paginator pointer" *ngIf="page !== 1" [disabled]="page === 1" (click)="paginate(1)"><i class="fas fa-backward"></i></button>
+                          </li>
+                          <li class="page-item" *ngIf="page !== 1" (click)="paginate(page - 1)"><a class="page-link pointer">{{page - 1 }}</a></li>
+                          <li class="page-item" [class.active]="page === page">
+                          <a class="page-link">{{page}}</a>
+                          </li>
+                          <li class="page-item" *ngIf="totalPages >= 2 && page !== totalPages" (click)="paginate(page + 1)"><a class="page-link pointer">{{page + 1}}</a></li>
+                          <li class="page-item" *ngIf="page !== totalPages">
+                          <button class="page-link text-dark btn-paginator pointer" [disabled]="page === totalPages" (click)="paginate(totalPages)"><i class="fas fa-forward"></i></button>
+                          </li>
+                      </ul>
+              </div>
+          </div>
+             <div class="alert alert-danger animated fadeIn mt-2" role="alert" *ngIf="consultations.length===0" > 
+              <i class="fas fa-times"></i> No tiene <strong>consultas</strong> previas.
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+      <h6 class="card-title mt-1 text-center text-underline"><strong>Nueva Consulta</strong></h6>
+      <form [formGroup]="consultationForm">
+        <div class="row">
+          <!-- <div class="form-group col-md-6 p-1 m-0">
+            <label for="name"
+            ><strong>Institución</strong
+            ><span class="font-13 text-muted"></span
+          ></label>
+          <select class="form-select" [class.is-invalid]="getFieldValid('institution')" formControlName="institution">
+            <option [value]="item.id" *ngFor="let item of institutionCombo">{{item.text}}</option>
+          </select>
+            <p class="text-danger" *ngIf="getFieldValid('institution')">
+              *Seleccione una <strong>institución</strong>.
+            </p>
+          </div> -->
+            <!-- <div class="form-group col-md-6 p-1 m-0">
+              <label for="name"
+              ><strong>Médico</strong
+              ><span class="font-13 text-muted"></span
+            ></label>
+            <select class="form-select" [class.is-invalid]="getFieldValid('doctor')" formControlName="doctor">
+              <option [value]="item.id" *ngFor="let item of doctorCombo">{{item.text}}</option>
+            </select>
+              <p class="text-danger" *ngIf="getFieldValid('doctor')">
+                *Seleccione una <strong>médico</strong>.
+              </p>
+            </div> -->
+          <div class="form-group col-md-12 m-0 p-1">
+            <label for="symptomDescription"
+            ><strong>Motivo consulta</strong
+              ><span class="font-13 text-muted"></span
+                ></label>                    
+                <textarea type="text" class="form-control" id="symptomDescription" rows="3" formControlName="symptomDescription" [class.is-invalid]="getFieldValid('symptomDescription')"></textarea>
+                <p class="text-danger" *ngIf="getFieldValid('symptomDescription')">
+                  *Ingrese un <strong>motivo</strong>.
+                </p>
+          </div>
+          <div class="form-group col-md-12 m-0 p-1">
+            <label for="symptomDescription"
+            ><strong>Exámen físico</strong
+              ><span class="font-13 text-muted"></span
+                ></label>                    
+                <textarea type="text" class="form-control" id="physicalExamination" rows="3" formControlName="physicalExamination" [class.is-invalid]="getFieldValid('physicalExamination')"></textarea>
+                <p class="text-danger" *ngIf="getFieldValid('physicalExamination')">
+                  *Ingrese el <strong>examen físico</strong>.
+                </p>
+          </div>
+          <div class="form-group col-md-4 p-1 m-0">
+            <label for="weight"
+            ><strong>Peso</strong
+            ><span class="font-13 text-muted">(kg.)</span
+          ></label>
+            <input type="number" class="form-control" id="weight" formControlName="weight" [class.is-invalid]="getFieldValid('weight')">
+            <p class="text-danger" *ngIf="getFieldValid('weight')">
+              *Ingrese el <strong>peso</strong>.
+            </p>
+          </div>
+          <div class="form-group col-md-4 p-1 m-0">
+            <label for="height"
+            ><strong>Altura</strong
+            ><span class="font-13 text-muted">(cm.)</span
+          ></label>
+            <input type="number" class="form-control" id="height" formControlName="height" [class.is-invalid]="getFieldValid('height')">
+            <p class="text-danger" *ngIf="getFieldValid('height')">
+              *Ingrese la <strong>altura</strong>.
+            </p>
+          </div>
+          <div class="form-group col-md-4 p-1 m-0">
+            <label for="pc"
+            ><strong>PC</strong
+            ><span class="font-13 text-muted"></span
+          ></label>
+            <input type="text" class="form-control" id="pc" formControlName="pc" [class.is-invalid]="getFieldValid('pc')">
+            <p class="text-danger" *ngIf="getFieldValid('pc')">
+              *Ingrese el <strong>PC</strong>.
+            </p>
+          </div>
+          <div class="form-group col-md-6 p-1 m-0">
+            <label for="ta"
+            ><strong>TA</strong
+            ><span class="font-13 text-muted"></span
+          ></label>
+            <input type="number" class="form-control" id="ta" formControlName="ta" [class.is-invalid]="getFieldValid('ta')">
+            <p class="text-danger" *ngIf="getFieldValid('ta')">
+              *Ingrese el <strong>TA</strong>.
+            </p>
+          </div>
+          <div class="form-group col-md-6 p-1 m-0">
+            <label for="visualAcuity"
+            ><strong>Agudeza Visual</strong
+            ><span class="font-13 text-muted"></span
+          ></label>
+            <input type="number" class="form-control" id="visualAcuity" formControlName="visualAcuity" [class.is-invalid]="getFieldValid('visualAcuity')">
+            <p class="text-danger" *ngIf="getFieldValid('visualAcuity')">
+              *Ingrese la <strong>agudeza visual</strong>.
+            </p>
+          </div>
+          <div class="form-group col-md-12 m-0 p-1">
+            <label for="feeding"
+            ><strong>Alimentación</strong
+              ><span class="font-13 text-muted"></span
+                ></label>                    
+                <textarea type="text" class="form-control" id="feeding" rows="2" formControlName="feeding" [class.is-invalid]="getFieldValid('feeding')"></textarea>
+                <p class="text-danger" *ngIf="getFieldValid('feeding')">
+                  *Ingrese una descripción de la <strong>alimentación</strong>.
+                </p>
+          </div>
+          <div class="form-group col-md-12 m-0 p-1">
+            <label for="vaccine"
+            ><strong>Vacunas</strong
+              ><span class="font-13 text-muted"></span
+                ></label>                    
+                <textarea type="text" class="form-control" id="vaccine" rows="2" formControlName="vaccine" [class.is-invalid]="getFieldValid('vaccine')"></textarea>
+                <p class="text-danger" *ngIf="getFieldValid('vaccine')">
+                  *Ingrese una descripción de las <strong>vacunas</strong>.
+                </p>
+          </div>
+          <div class="form-group col-md-5 m-0 p-1">
+            <label for="pathologies"
+            ><strong>Patologías</strong
+              ><span class="font-13 text-muted"></span
+                ></label>                    
+                <!-- <select class="form-select"  (change)="setPathology($event.target.value)" id="selectPathology" formControlName="pathologies" [class.is-invalid]="getFieldValid('pathologies')">
+                  <option value="" selected hidden>Seleccione una patología</option>
+                  <option *ngFor="let item of pathologyCombo" [value]="item.id" [ngClass]="{pathologySelected: pathologiesID.includes(item.id)}">{{item.text}}</option>
+                </select> -->
+                <div class="dropdown h-100" class="statusDropdownContainer">
+                  <a class="btn btn-block btn-white dropdown-toggle mb-2 statusFilterDropdown h-100 flex-middle" href="#" role="button"
+                      id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="text-truncate">Patologías</span>
+                  </a>
+                  <div class="dropdown-menu w-100 pt-0" aria-labelledby="dropdownMenuButton">
+                      <input type="text" class="w-100 p-2 searchInput" placeholder="Buscar.." [ngModel]="searchValuePathology" [ngModelOptions]="{standalone: true}" (ngModelChange)="filterDropdownPathology($event)">
+                      <button class="btn btn-dark new" style="width: 100%;" (click)="openNewPathologyModal()"><i class="fa fa-plus"></i> Nueva</button>
+                      <a *ngFor="let option of pathologiesFiltered; let i=index" class="dropdown-item pointer text-contain"
+                          [ngClass]="{'alternateBackground': i%2 == 0 }" (click)="setPathology(option.id)">
+                          {{option.text}}
+                      </a>
+                      <div *ngIf="pathologiesFiltered?.length===0" class="text-center text-muted mt-1">No se encontraron pacientes</div>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group col-md-7 m-0 p-1 d-flex align-items-center flex-wrap">
+            <span class="badge badge-secondary m-1 pointer" (click)="deletePathology(item)" *ngFor="let item of pathologiesText">{{item}}</span>
+            <p class="text-danger" *ngIf="getFieldValid('pathologies')">
+              *Ingrese una o más <strong>patologías</strong>.
+            </p>
+          </div>
+          <div class="form-group col-md-12 m-0 p-1">
+            <label for="treatmentDescription"
+            ><strong>Indicación</strong
+              ><span class="font-13 text-muted"></span
+                ></label>                    
+                <textarea type="text" class="form-control" id="treatmentDescription" rows="3" formControlName="treatmentDescription" [class.is-invalid]="getFieldValid('treatmentDescription')"></textarea>
+                <p class="text-danger" *ngIf="getFieldValid('treatmentDescription')">
+                  *Ingrese una <strong>indicación</strong>.
+                </p>
+          </div>
+          <div class="form-group col-md-12 m-0 p-1">
+            <label for="comments"
+            ><strong>Comentarios adicionales</strong
+              ><span class="font-13 text-muted"></span
+                ></label>                    
+                <textarea type="text" class="form-control" id="comments" rows="2" formControlName="comments"></textarea>
+          </div>
+          <div class="form-group col-md-12 text-center" style="margin-top: 5vh;">
+            <button (click)="createConsultation()" class="btn btn-info mr-1" ><i class="fas fa-edit"></i> Guardar</button>
+            <button (click)="cancel()" class="btn btn-danger"><i class="fas fa-times-circle"></i> Cancelar</button>
+        </div> 
+        </div>
+      </form>
+    </div>
+
+  </div>
+  
+  <app-line-loader></app-line-loader>
+  <app-pathology-modal *ngIf="hiddenPathologyModal" [hiddenPathologyModal]="!hiddenPathologyModal" [mode]="'create'" [pathologySelected]="pathologySelected"
+  (closeModal)="closeModal('pathology')" (getPathologies)="getPathologyCombo()">
+  
+  

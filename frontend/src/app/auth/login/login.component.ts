@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SweetAlertService } from 'src/app/services/sweet-alert.service';
 import { ErrorsService } from 'src/app/services/errors.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
               private router: Router,
               private authService: AuthService,
               private sweetAlertService: SweetAlertService,
+              private loaderService: LoaderService,
               private errorService: ErrorsService) {
     this.createForm();
   }
@@ -38,6 +40,7 @@ export class LoginComponent implements OnInit {
       })
       return;
     }
+    this.loaderService.openLineLoader();
     this.authService.signIn(this.loginForm.value, 'DOCTOR')
                       .subscribe(resp => {
                         if (this.loginForm.get('remember').value){
@@ -50,9 +53,11 @@ export class LoginComponent implements OnInit {
                           text:'',
                           icon:'success'
                         });
-                        this.router.navigateByUrl('/doctor/home');
+                        this.loaderService.closeLineLoader();
+                        this.router.navigateByUrl('/doctor');
                       }, (err) => {
                         console.log(err);
+                        this.loaderService.closeLineLoader();
                         this.errorService.showErrors(err.error.code,err.error.msg);
                       });
   }

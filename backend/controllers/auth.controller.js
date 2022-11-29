@@ -28,24 +28,24 @@ authCtrl.login = async (req = request, res = response) => {
       });
     }
     // SI SE LOGUEA UN USUARIO COMUN --> 'USER' ; SI SE LOGUEA OTRO --> 'CENTER'
-    if (type === 'DOCTOR') {
-      if (doctorDB.role !== 'ADMIN') {
-        return res.status(403).json({
-          ok: false,
-          msg: 'User does not have permission in this module',
-          code: 5,
-        });
-      }
-    }
-    if (type === 'ADMIN') {
-      if (doctorDB.role !== 'DOCTOR') {
-        return res.status(403).json({
-          ok: false,
-          msg: 'User does not have permission in this module',
-          code: 5,
-        });
-      }
-    }
+    // if (type === 'DOCTOR') {
+    //   if (doctorDB.role !== 'ADMIN') {
+    //     return res.status(403).json({
+    //       ok: false,
+    //       msg: 'User does not have permission in this module',
+    //       code: 5,
+    //     });
+    //   }
+    // }
+    // if (type === 'ADMIN') {
+    //   if (doctorDB.role !== 'DOCTOR') {
+    //     return res.status(403).json({
+    //       ok: false,
+    //       msg: 'User does not have permission in this module',
+    //       code: 5,
+    //     });
+    //   }
+    // }
     if (doctorDB.deletedDate !== null) {
       return res.status(403).json({
         ok: false,

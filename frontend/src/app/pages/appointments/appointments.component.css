@@ -1,0 +1,88 @@
+.btn{
+
+    border-radius: 25px;
+
+   }
+
+   .new{
+        font-size: 12px;
+   }
+   .statusDropdownContainer, .calendarBtnContainer{
+    padding-top: 6px;
+}
+
+.statusFilterDropdown{
+    box-shadow: -2px 2px 4px 0px #888;
+    background-color: #f2f8f9;
+    border: 1px solid #d3d3d3;
+}
+
+.inputDate{
+    box-shadow: -2px 2px 4px 0px #888;
+    background-color: #f2f8f9;
+    border: 1px solid #d3d3d3;
+}
+.flex-middle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.no-click{
+    pointer-events: none;
+    background-color: #e9ecef};
+
+      
+      .wrapper-calendar{
+        margin:1rem;
+        padding: .5rem;
+        border: solid 1px #eaeaea;
+        box-shadow: 0 0 10px #e4e4e4;
+      }
+  
+        
+        ol {
+          list-style: none;
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          margin: 0;
+          padding: 0;
+        }
+        
+        .day {
+          padding: .25rem;
+          font-size: 1.5ch;
+          cursor: pointer;
+        }
+        .day:hover{
+          font-weight: 600;
+        }
+        
+        .first-day {
+          grid-column-start: var(--first-day-start, 0);
+        }
+        
+        .day-name {
+          background: #eee;
+          font-weight: bold;
+          font-size: 12px;
+          margin-bottom: 2px;
+          padding: 4px;
+          text-align: center;
+        }
+        
+        .header-calendar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          align-content: center;
+        }
+        
+        .header-calendar h1 {
+          width: 100%;
+          font-size: 17px;
+        }
+
+        .error-msg{
+          color: red;
+        }

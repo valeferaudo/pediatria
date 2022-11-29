@@ -28,4 +28,8 @@ export class PathologyService {
   updatePathology(id: string, pathology: Pathology){
     return this.http.put(`${baseUrl}/pathologies/${id}`,pathology);
   }
+
+  getCombo(){
+    return this.http.get(`${baseUrl}/pathologies/combo`);
+  }
 }

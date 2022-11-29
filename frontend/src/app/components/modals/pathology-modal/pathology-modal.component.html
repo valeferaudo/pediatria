@@ -1,7 +1,7 @@
-<div class="background-modal" [class.hidden]="hiddenModal" >
-    <div class="modal  show animated fadeIn fast" id="exampleModal" tabindex="-1" role="dialog" 
+<div class="background-modal" [class.hidden]="hiddenPathologyModal">
+    <div class="modal  show animated fadeIn fast" id="exampleModal" tabindex="-1" role="dialog"  
         aria-labelledby="exampleModalLabel1" aria-hidden="true" 
-        style="overflow-y:auto; display: block" data-backdrop="static" data-keyboard="false">
+        style="overflow-y:auto; display: block; background-color: rgba(0, 0, 0, 0.5);" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -16,24 +16,96 @@
                 <p *ngIf="mode === 'update'">Modifique los datos de la patología.</p>
               <form [formGroup]="pathologyForm">
                 <div class="form-group">
-                  <label for="name" class="col-form-label">Nombre:</label>
+                  <label for="name"
+                  ><strong>Nombre</strong
+                  ><span class="font-13 text-muted"></span
+                ></label>
                   <input type="text" class="form-control" id="name" formControlName="name" [class.is-invalid]="getFieldValid('name')">
                   <p class="text-danger" *ngIf="getFieldValid('name')">
                     *Ingrese el <strong>nombre</strong>.
                   </p>
                 </div>
-                <div class="form-group">
-                    <label for="code" class="col-form-label">Código:</label>
-                    <input type="text" class="form-control" id="code" formControlName="code" [class.is-invalid]="getFieldValid('code')">
+                <div
+              class="form-group">
+                <label for=""
+                  ><strong>Sintomas</strong
+                  ><span class="font-13 text-muted"></span
+                ></label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control form-control-line"
+                    placeholder="Ingrese un sintoma"
+                    #symptom
+                    (keyup.enter)="addSymptom(symptom)"
+                  />
+                  <div
+                    class="input-group-addon pointer bg-success"
+                    (click)="addSymptom(symptom)"
+                  >
+                    <i class="fas fa-plus text-white"></i>
+                  </div>
                 </div>
+              <div class="table-responsive animated fadeIn mt-1" style="padding-left: 15px;padding-right: 15px;" *ngIf="symptoms.length!==0">
+                <table class="table table-hover table-bordered">
+                    <tbody>
+                        <tr *ngFor="let symptom of symptoms; let i = index">
+                            <td width="70%">{{symptom}}</td>
+                            <td width="30%"class="text-center">
+                                <button type="button" (click)="deleteSymptom(i)" class="btn btn-danger badge m-1">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+            <div
+              class="form-group">
+                <label for=""
+                  ><strong>Posible tratamiento</strong
+                  ><span class="font-13 text-muted"></span
+                ></label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control form-control-line"
+                    placeholder="Ingrese un posible tratamiento"
+                    #possibleTreatment
+                    (keyup.enter)="addPossibleTreatment(possibleTreatment)"
+                  />
+                  <div
+                    class="input-group-addon pointer bg-success"
+                    (click)="addPossibleTreatment(possibleTreatment)"
+                  >
+                    <i class="fas fa-plus text-white"></i>
+                  </div>
+                </div>
+              <div class="table-responsive animated fadeIn mt-1" style="padding-left: 15px;padding-right: 15px;" *ngIf="possibleTreatments.length!==0">
+                <table class="table table-hover table-bordered">
+                    <tbody>
+                        <tr *ngFor="let possibleTreatment of possibleTreatments; let i = index">
+                            <td width="70%">{{possibleTreatment}}</td>
+                            <td width="30%"class="text-center">
+                                <button type="button" (click)="deletePossibleTreatment(i)" class="btn btn-danger badge m-1">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
               </form>
             </div>
             <div class="modal-footer">
-              <button *ngIf="mode === 'create'" type="button" class="btn btn-info" (click)="createService()">Crear</button>
-              <button *ngIf="mode === 'update'" type="button" class="btn btn-info" (click)="updateService()" [hidden]="formsEquals">Modificar</button>
+              <button *ngIf="mode === 'create'" type="button" class="btn btn-info" (click)="createPathology()">Crear</button>
+              <button *ngIf="mode === 'update'" type="button" class="btn btn-info" (click)="updatePathology()" [hidden]="formsEquals">Modificar</button>
               <button type="button" class="btn btn-danger"  (click)="closedModal()">Cancelar</button>
             </div>
           </div>
         </div>
     </div>
 </div>
+<app-line-loader></app-line-loader>

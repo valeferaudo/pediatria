@@ -4,6 +4,7 @@ import { SweetAlertService } from 'src/app/services/sweet-alert.service';
 import { PathologyService } from 'src/app/services/pathology.service';
 import { Pathology } from 'src/app/models/pathology.model';
 import { PathologyFilter } from 'src/app/interfaces/pathologyFilter.interface';
+import { LoaderService } from '../../services/loader.service';
 
 
 @Component({
@@ -24,8 +25,6 @@ export class PathologiesComponent implements OnInit {
   filters: PathologyFilter = {
     text: '',
   }
-  selectedFilters: string [] = [];
-  serviceStates = ['Activo', 'Bloqueado'];
   //PAGINATOR
   totalPages = null;
   page = 1;
@@ -33,6 +32,7 @@ export class PathologiesComponent implements OnInit {
 
   constructor(private pathologyService: PathologyService,
               private sweetAlertService: SweetAlertService,
+              private loaderService: LoaderService,
               private errorService: ErrorsService) {}
               
   ngOnInit(): void {
@@ -40,16 +40,18 @@ export class PathologiesComponent implements OnInit {
   }
 
   getPathologies(){
+    this.loaderService.openLineLoader()
     this.pathologyService.getPathologies(this.filters,this.page)
                     .subscribe((resp:any)=>{
-                      console.log(resp)
                       if(resp.ok){
+                        this.loaderService.closeLineLoader()
                         this.pathologies = resp.param.pathologies;
                         this.page = resp.param.paginator.page;
                         this.totalPages = resp.param.paginator.totalPages;
                       }
                     }, (err) => {
                       console.log(err)
+                      this.loaderService.closeLineLoader()
                       this.errorService.showErrors(err.error.code,err.error.msg);
                     })
   }

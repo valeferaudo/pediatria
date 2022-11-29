@@ -1,0 +1,19 @@
+.middle-border{
+    border-right: 2px solid rgba(0,0,0,.1)
+}
+.pathologySelected{
+    background-color: gray;
+}
+
+.new{
+        font-size: 12px;
+   }
+   .statusDropdownContainer, .calendarBtnContainer{
+    padding-top: 6px;
+}
+
+.statusFilterDropdown{
+    box-shadow: -2px 2px 4px 0px #888;
+    background-color: #f2f8f9;
+    border: 1px solid #d3d3d3;
+}

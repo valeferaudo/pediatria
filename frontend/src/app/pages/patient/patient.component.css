@@ -6,3 +6,12 @@
     border-color: #ef5350;
     border-width: 1px
 }
+.btn{
+
+    border-radius: 25px;
+
+   }
+
+   .new{
+        font-size: 12px;
+   }

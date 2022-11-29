@@ -4,7 +4,7 @@
             <h2 class="card-title"><strong>Listado de Patologías </strong></h2>
         </div>
         <div class="col-md-6">
-            <button (click)="createPathologyModal()" class="pull-right btn btn-info entry-button"><i class="fas fa-plus"></i> Nueva patología</button>
+            <button class="btn btn-dark new pull-right" (click)="createPathologyModal()"><i class="fa fa-plus"></i> Nuevo</button>
         </div>
     </div>
 </div>
@@ -12,13 +12,12 @@
 <div class="col-12 mb-2">
     <div class="row">
       <div class="col-sm-9 col-md-9 p-0">
-            <div id="example_filter" class="search-entry">
-                <h6 class="pull-left">
-                    <strong class="search-title-text">Buscar:</strong>
-                    <input type="search" class="" [value]="searchText" placeholder="" #text (keyup.enter)="searchPathologies(text.value)" >
-                    <i class="fas fa-search pointer" (click)="searchPathologies(text.value)"></i>
-                </h6>
+        <div class="input-group">
+            <input type="text" class="form-control" [value]="searchText" placeholder="" #text (keyup.enter)="searchPathologies(text.value)" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" (click)="searchPathologies(text.value)" type="button"><i class="fas fa-search pointer"></i></button>
             </div>
+          </div>
       </div>
       <div class="col-sm-3 col-md-3 p-0">
         <a class="text-info pointer d-flex pull-right entry-button" (click)="refreshTable()">Limpiar</a>
@@ -31,7 +30,8 @@
             <tr>
                 <th>#</th>
                 <th>Nombre</th>
-                <th>Descripción</th>
+                <th>Síntomas</th>
+                <th>Tratamiento</th>
                 <th class="text-center">Acción</th>
             </tr>
         </thead>
@@ -39,14 +39,10 @@
             <tr *ngFor="let pathology of pathologies; let i = index">
                 <td>{{((page -1) * 6) + i+1}}</td>
                 <td>{{pathology.name}}</td>
-                <td>{{pathology.description}}</td>
+                <td><span class="badge badge-secondary m-1" *ngFor="let item of pathology.symptom">{{item}}</span></td>
+                <td><span class="badge badge-secondary m-1" *ngFor="let item of pathology.possibleTreatment">{{item}}</span></td>
+
                 <td class="text-center">
-                    <button (click)="activateBlockPathology(pathology, 'active')" *ngIf="service.state === false" class="btn btn-success badge m-1" data-toggle="tooltip" data-placement="top" title="Activar">
-                        <i class="fas fa-check"></i>
-                    </button>
-                    <button (click)="activateBlockPathology(pathology, 'block')" *ngIf="service.state === true" class="btn btn-danger badge m-1" data-toggle="tooltip" data-placement="top" title="Bloquear">
-                        <i class="fas fa-times"></i>
-                    </button>
                     <button (click)="updatePathologyModal(pathology)"  class="btn btn-info badge m-1 text-center" data-toggle="tooltip" data-placement="top" title="Editar">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
@@ -75,5 +71,8 @@
             </ul>
     </div>
 </div>
+
+<app-line-loader></app-line-loader>
 <app-pathology-modal *ngIf="hiddenModal" [hiddenModal]="!hiddenModal" [mode]="modalMode" [pathologySelected]="pathologySelected"
                                     (closeModal)="closeModal()" (getPathologies)="getPathologies()">
+                                

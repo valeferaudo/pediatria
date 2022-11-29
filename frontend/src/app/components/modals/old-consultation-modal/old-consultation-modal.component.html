@@ -1,0 +1,215 @@
+<div class="background-modal" [class.hidden]="hiddenOldConsultationModal">
+    <div class="modal  show animated fadeIn fast" id="exampleModal" tabindex="-1" role="dialog"  
+        aria-labelledby="exampleModalLabel1" aria-hidden="true" 
+        style="overflow-y:auto; display: block; background-color: rgba(0, 0, 0, 0.5);" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 *ngIf="mode === 'create'" class="modal-title font-bold" id="exampleModalLabel">Crear Consulta</h4>
+              <h4 *ngIf="mode === 'update'" class="modal-title" id="exampleModalLabel">Actualizar Consulta</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closedModal()">
+                <span aria-hidden="true">&times;</span>
+              </button>        
+            </div>
+            <div class="row m-3" *ngIf="mode === 'update'">
+              <div class="col-md-6">
+                  <h6><strong class="text-underline">Paciente: </strong>{{consultationSelected?.patient?.name}} {{consultationSelected?.patient?.lastName}}</h6>
+              </div>
+              <div class="col-md-6">
+                  <h6><strong class="text-underline">Fecha: </strong>{{consultationSelected?.dateTime | date:'dd/MM/yyyy'}}</h6>
+              </div>
+            </div>
+            <div class="modal-body">
+                <p *ngIf="mode === 'create'">Complete los datos de la consulta.</p>
+                <form [formGroup]="consultationForm">
+                  <div class="row">
+                    <div class="col-md-12 m-0 p-1" *ngIf="mode === 'create'">
+                      <label
+                      ><strong>Paciente</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label> 
+                      <div class="dropdown h-100" class="statusDropdownContainer">
+                          <a class="btn btn-white dropdown-toggle mb-2 statusFilterDropdown h-100 flex-middle" href="#" role="button"
+                              id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <span class="text-truncate">{{selectedValuePatient || 'Paciente'}}</span>
+                          </a>
+                          <div class="dropdown-menu w-100 pt-0" aria-labelledby="dropdownMenuButton">
+                              <input type="text" class="w-100 p-2 searchInput" placeholder="Buscar.." [ngModel]="searchValuePatient" [ngModelOptions]="{standalone: true}" (ngModelChange)="filterDropdownPatient($event)">
+                              <!-- <button class="btn btn-dark new" style="width: 100%;" (click)="openNewPatientModal()"><i class="fa fa-plus"></i> Nuevo</button> -->
+                              <a *ngFor="let option of patientsFiltered; let i=index" class="dropdown-item pointer text-contain"
+                                  [ngClass]="{'alternateBackground': i%2 == 0 }" (click)="selectValuePatient(option)">
+                                  {{option.text}}
+                              </a>
+                              <div *ngIf="patientsFiltered?.length===0" class="text-center text-muted mt-1">No se encontraron pacientes</div>
+                          </div>
+                          <p class="text-danger" *ngIf="patientError">*Seleccione un paciente</p>
+                      </div>
+                  </div>
+                  <div class="row" *ngIf="mode === 'create'">
+                    <label for="symptomDescription" class="p-0"
+                      ><strong>Fecha</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label>
+                          <div class="form-group col-md-8 m-0 p-1">
+                            <input class="form-control" type="date" [ngModel]="dateInput" [ngModelOptions]="{standalone: true}" (ngModelChange)="changeDate($event,'date')">
+                          </div>
+                          <div class="form-group col-md-4 m-0 p-1" *ngIf="dateInput !== null">
+                            <input class="form-control" type="time" [ngModel]="timeInput" [ngModelOptions]="{standalone: true}" (ngModelChange)="changeDate($event,'time')">
+                          </div>
+                        <p class="text-danger" *ngIf="timeError">*Seleccione una fecha y hora</p>
+                  </div>
+                    <div class="form-group col-md-12 m-0 p-1">
+                      <label for="symptomDescription"
+                      ><strong>Motivo consulta</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label>                    
+                          <textarea type="text" class="form-control" id="symptomDescription" rows="3" formControlName="symptomDescription" [class.is-invalid]="getFieldValid('symptomDescription')"></textarea>
+                          <p class="text-danger" *ngIf="getFieldValid('symptomDescription')">
+                            *Ingrese un <strong>motivo</strong>.
+                          </p>
+                    </div>
+                    <div class="form-group col-md-12 m-0 p-1">
+                      <label for="symptomDescription"
+                      ><strong>Exámen físico</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label>                    
+                          <textarea type="text" class="form-control" id="physicalExamination" rows="3" formControlName="physicalExamination" [class.is-invalid]="getFieldValid('physicalExamination')"></textarea>
+                          <p class="text-danger" *ngIf="getFieldValid('physicalExamination')">
+                            *Ingrese el <strong>examen físico</strong>.
+                          </p>
+                    </div>
+                    <div class="form-group col-sm-6 col-md-3 p-1 m-0">
+                      <label for="weight"
+                      ><strong>Peso</strong
+                      ><span class="font-13 text-muted">(kg.)</span
+                    ></label>
+                      <input type="number" class="form-control" id="weight" formControlName="weight" [class.is-invalid]="getFieldValid('weight')">
+                      <p class="text-danger" *ngIf="getFieldValid('weight')">
+                        *Ingrese el <strong>peso</strong>.
+                      </p>
+                    </div>
+                    <div class="form-group col-sm-6 col-md-3 p-1 m-0">
+                      <label for="height"
+                      ><strong>Altura</strong
+                      ><span class="font-13 text-muted">(cm.)</span
+                    ></label>
+                      <input type="number" class="form-control" id="height" formControlName="height" [class.is-invalid]="getFieldValid('height')">
+                      <p class="text-danger" *ngIf="getFieldValid('height')">
+                        *Ingrese la <strong>altura</strong>.
+                      </p>
+                    </div>
+                    <div class="form-group col-sm-6 col-md-3 p-1 m-0">
+                      <label for="pc"
+                      ><strong>PC</strong
+                      ><span class="font-13 text-muted"></span
+                    ></label>
+                      <input type="text" class="form-control" id="pc" formControlName="pc" [class.is-invalid]="getFieldValid('pc')">
+                      <p class="text-danger" *ngIf="getFieldValid('pc')">
+                        *Ingrese el <strong>PC</strong>.
+                      </p>
+                    </div>
+                    <div class="form-group col-sm-6 col-md-3 p-1 m-0">
+                      <label for="ta"
+                      ><strong>TA</strong
+                      ><span class="font-13 text-muted"></span
+                    ></label>
+                      <input type="number" class="form-control" id="ta" formControlName="ta" [class.is-invalid]="getFieldValid('ta')">
+                      <p class="text-danger" *ngIf="getFieldValid('ta')">
+                        *Ingrese el <strong>TA</strong>.
+                      </p>
+                    </div>
+                    <div class="form-group col-sm-6 col-md-3 p-1 m-0">
+                      <label for="visualAcuity"
+                      ><strong>Agudeza Visual</strong
+                      ><span class="font-13 text-muted"></span
+                    ></label>
+                      <input type="number" class="form-control" id="visualAcuity" formControlName="visualAcuity" [class.is-invalid]="getFieldValid('visualAcuity')">
+                      <p class="text-danger" *ngIf="getFieldValid('visualAcuity')">
+                        *Ingrese la <strong>agudeza visual</strong>.
+                      </p>
+                    </div>
+                    <div class="form-group col-md-3 m-0 p-1">
+                      <label for="pathologies"
+                      ><strong>Patologías</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label>                    
+                          <!-- <select class="form-select"  (change)="setPathology($event.target.value)" id="selectPathology" formControlName="pathologies" [class.is-invalid]="getFieldValid('pathologies')">
+                            <option value="" selected hidden>Seleccione una patología</option>
+                            <option *ngFor="let item of pathologyCombo" [value]="item.id" [ngClass]="{pathologySelected: pathologiesID.includes(item.id)}">{{item.text}}</option>
+                          </select> -->
+                          <div class="dropdown h-100" class="statusDropdownContainer">
+                            <a class="btn btn-block btn-white dropdown-toggle mb-2 statusFilterDropdown h-100 flex-middle" href="#" role="button"
+                                id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="text-truncate">Patologías</span>
+                            </a>
+                            <div class="dropdown-menu w-100 pt-0" aria-labelledby="dropdownMenuButton">
+                                <input type="text" class="w-100 p-2 searchInput" placeholder="Buscar.." [ngModel]="searchValuePathology" [ngModelOptions]="{standalone: true}" (ngModelChange)="filterDropdownPathology($event)">
+                                <button class="btn btn-dark new" style="width: 100%;" (click)="openNewPathologyModal()"><i class="fa fa-plus"></i> Nueva</button>
+                                <a *ngFor="let option of pathologiesFiltered; let i=index" class="dropdown-item pointer text-contain"
+                                    [ngClass]="{'alternateBackground': i%2 == 0 }" (click)="setPathology(option.id)">
+                                    {{option.text}}
+                                </a>
+                                <div *ngIf="pathologiesFiltered?.length===0" class="text-center text-muted mt-1">No se encontraron pacientes</div>
+                            </div>
+                        </div>
+                      </div>
+                    <div class="form-group col-md-6 m-0 p-1 d-flex align-items-center flex-wrap">
+                      <span class="badge badge-secondary m-1 pointer" (click)="deletePathology(item)" *ngFor="let item of pathologiesText">{{item}}</span>
+                      <p class="text-danger" *ngIf="getFieldValid('pathologies')">
+                          *Ingrese una o más <strong>patologías</strong>.
+                      </p>
+                    </div>
+                    <div class="form-group col-md-12 m-0 p-1">
+                      <label for="feeding"
+                      ><strong>Alimentación</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label>                    
+                          <textarea type="text" class="form-control" id="feeding" rows="2" formControlName="feeding" [class.is-invalid]="getFieldValid('feeding')"></textarea>
+                          <p class="text-danger" *ngIf="getFieldValid('feeding')">
+                            *Ingrese una descripción de la <strong>alimentación</strong>.
+                          </p>
+                    </div>
+                    <div class="form-group col-md-12 m-0 p-1">
+                      <label for="vaccine"
+                      ><strong>Vacunas</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label>                    
+                          <textarea type="text" class="form-control" id="vaccine" rows="2" formControlName="vaccine" [class.is-invalid]="getFieldValid('vaccine')"></textarea>
+                          <p class="text-danger" *ngIf="getFieldValid('vaccine')">
+                            *Ingrese una descripción de las <strong>vacunas</strong>.
+                          </p>
+                    </div>
+                    <div class="form-group col-md-12 m-0 p-1">
+                      <label for="treatmentDescription"
+                      ><strong>Indicación</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label>                    
+                          <textarea type="text" class="form-control" id="treatmentDescription" rows="3" formControlName="treatmentDescription" [class.is-invalid]="getFieldValid('treatmentDescription')"></textarea>
+                          <p class="text-danger" *ngIf="getFieldValid('treatmentDescription')">
+                            *Ingrese una <strong>indicación</strong>.
+                          </p>
+                    </div>
+                    <div class="form-group col-md-12 m-0 p-1">
+                      <label for="comments"
+                      ><strong>Comentarios adicionales</strong
+                        ><span class="font-13 text-muted"></span
+                          ></label>                    
+                          <textarea type="text" class="form-control" id="comments" rows="2" formControlName="comments"></textarea>
+                    </div>
+                  </div>
+                </form>
+          
+            </div>
+            <div class="modal-footer">
+              <button *ngIf="mode === 'create'" type="button" class="btn btn-info" (click)="createConsultation()">Crear</button>
+              <button *ngIf="mode === 'update'" type="button" class="btn btn-info" (click)="updateConsultation()">Modificar</button>
+              <button type="button" class="btn btn-danger"  (click)="closedModal()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+<app-line-loader></app-line-loader>
+<app-pathology-modal *ngIf="hiddenPathologyModal" [hiddenPathologyModal]="!hiddenPathologyModal" [mode]="'create'" [pathologySelected]="pathologySelected"
+(closeModal)="closePathologyModal()" (getPathologies)="getPathologyCombo()">

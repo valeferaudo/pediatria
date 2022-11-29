@@ -3,3 +3,16 @@
     padding-left: 5;
     padding-bottom: 0;
 }
+.active > .nav-link {
+    background: rgba(82, 18, 3, 0.3);
+    color:white
+}
+
+.nav-item:hover{
+    background: rgba(82, 18, 3, 0.3);
+}
+@media (max-width: 991px) {
+    li{
+        margin-left: 3px;
+    }
+  }

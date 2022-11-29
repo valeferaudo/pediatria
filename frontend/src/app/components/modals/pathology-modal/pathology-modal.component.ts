@@ -4,6 +4,7 @@ import { Pathology } from 'src/app/models/pathology.model';
 import { ErrorsService } from 'src/app/services/errors.service';
 import { PathologyService } from 'src/app/services/pathology.service';
 import { SweetAlertService } from 'src/app/services/sweet-alert.service';
+import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-pathology-modal',
@@ -12,7 +13,7 @@ import { SweetAlertService } from 'src/app/services/sweet-alert.service';
 })
 export class PathologyModalComponent implements OnInit {
 
-  @Input() hiddenModal: boolean;
+  @Input() hiddenPathologyModal: boolean;
   @Input() mode: 'create' | 'update';
   @Input() pathologySelected: Pathology;
   @Output() closeModal = new EventEmitter<string>();
@@ -21,9 +22,13 @@ export class PathologyModalComponent implements OnInit {
   pathologyForm: FormGroup
   pathology: Pathology;
   formsEquals: boolean = true;
+  symptoms: string[] = [];
+  possibleTreatments: string[] = [];
+
   constructor(private pathologyService: PathologyService,
               private fb: FormBuilder,
               private errorService: ErrorsService,
+              private loaderService: LoaderService,
               private sweetAlertService: SweetAlertService) {}
     
   ngOnInit(): void {
@@ -34,16 +39,18 @@ export class PathologyModalComponent implements OnInit {
     if(this.mode === 'update'){
       this.pathologyForm.patchValue({
         name: this.pathologySelected.name,
-        code: this.pathologySelected.code,
+        symptom: this.pathologySelected.symptom,
         possibleTreatment: this.pathologySelected.possibleTreatment
       })
+      this.symptoms = [...this.pathologySelected.symptom]
+      this.possibleTreatments = [...this.pathologySelected.possibleTreatment]
       this.listenerForm();
     }
   }
   createPathologyForm(){
     this.pathologyForm = this.fb.group({
       name:["",[Validators.required],],
-      code:["",[],],
+      symptom: ["",[]],
       possibleTreatment:["",[]]
     })
   }
@@ -63,9 +70,11 @@ export class PathologyModalComponent implements OnInit {
       icon: 'question'})
     .then((result) => {
       if (result.value) {
+        this.loaderService.openLineLoader()
         this.pathologyService.createPathology(this.pathologyForm.value)
                     .subscribe((resp: any) =>{
                       if(resp.ok){
+                        this.loaderService.closeLineLoader();
                         this.sweetAlertService.showSwalResponse({
                           title: 'Patología creada',
                           text:'',
@@ -76,12 +85,13 @@ export class PathologyModalComponent implements OnInit {
                       }
                     },(err)=>{
                       console.log(err);
+                      this.loaderService.closeLineLoader();
                       this.errorService.showErrors(err.error.code,err.error.msg);
                     })
       }
     })
   }
-  updateService(){
+  updatePathology(){
     if (this.pathologyForm.invalid){
       Object.values(this.pathologyForm.controls).forEach(control => {
         control.markAsTouched();
@@ -89,16 +99,18 @@ export class PathologyModalComponent implements OnInit {
       return;
     }
     this.sweetAlertService.showSwalConfirmation({
-      title: '¿Editar servicio?',
+      title: '¿Editar patología?',
       text: ``,
       icon: 'question'})
     .then((result) => {
       if (result.value) {
-        this.pathologyService.updatePathology(this.pathologySelected.id,this.pathologyForm.value)
+        this.loaderService.openLineLoader()
+        this.pathologyService.updatePathology(this.pathologySelected._id,this.pathologyForm.value)
                     .subscribe((resp: any) =>{
                       if(resp.ok){
+                        this.loaderService.closeLineLoader();
                         this.sweetAlertService.showSwalResponse({
-                          title: 'Servicio editado',
+                          title: 'Patología editada',
                           text:'',
                           icon: 'success'
                         })
@@ -107,6 +119,7 @@ export class PathologyModalComponent implements OnInit {
                       }
                     },(err)=>{
                       console.log(err);
+                      this.loaderService.closeLineLoader();
                       this.errorService.showErrors(err.error.code,err.error.msg);
                     })
       }
@@ -115,7 +128,7 @@ export class PathologyModalComponent implements OnInit {
   listenerForm(){
     this.pathologyForm.valueChanges
             .subscribe(resp=>{
-              if(this.pathologySelected.name === this.pathologyForm.controls['name'].value && this.pathologySelected.code === this.pathologyForm.controls['code'].value && this.pathologySelected.possibleTreatment === this.pathologyForm.controls['possibleTreatment'].value){
+              if(this.pathologySelected.name === this.pathologyForm.controls['name'].value && this.pathologySelected.symptom === this.pathologyForm.controls['symptom'].value && this.pathologySelected.possibleTreatment === this.pathologyForm.controls['possibleTreatment'].value){
                 this.formsEquals = true;
               }
               else{
@@ -127,5 +140,38 @@ export class PathologyModalComponent implements OnInit {
     return this.pathologyForm.get(field).invalid &&
             this.pathologyForm.get(field).touched
   }
-
+  addSymptom(symptom: any) {
+    if (symptom.value.length > 0) {
+      if (this.symptoms.indexOf(symptom.value) === -1) {
+        this.symptoms.push(symptom.value);
+      }
+    }
+    this.pathologyForm.patchValue({
+      symptom: this.symptoms
+    })
+    symptom.value = '';
+  }
+  deleteSymptom(index: number) {
+    this.symptoms.splice(index, 1);
+    this.pathologyForm.patchValue({
+      symptom: this.symptoms
+    })
+  }
+  addPossibleTreatment(possibleTreatment: any) {
+    if (possibleTreatment.value.length > 0) {
+      if (this.possibleTreatments.indexOf(possibleTreatment.value) === -1) {
+        this.possibleTreatments.push(possibleTreatment.value);
+      }
+    }
+    this.pathologyForm.patchValue({
+      possibleTreatment: this.possibleTreatments
+    })
+    possibleTreatment.value = '';
+  }
+  deletePossibleTreatment(index: number) {
+    this.possibleTreatments.splice(index, 1);
+    this.pathologyForm.patchValue({
+      possibleTreatment: this.possibleTreatments
+    })
+  }
 }

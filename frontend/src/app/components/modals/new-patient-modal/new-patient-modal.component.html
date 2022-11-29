@@ -1,0 +1,57 @@
+<div class="background-modal" [class.hidden]="hiddenModal">
+    <div class="modal  show animated fadeIn fast" id="exampleModal" tabindex="-1" role="dialog"  
+        aria-labelledby="exampleModalLabel1" aria-hidden="true" 
+        style="overflow-y:auto; display: block; background-color: rgba(0, 0, 0, 0.5);" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title font-bold" id="exampleModalLabel">Crear Paciente</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closedModal()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <p>Complete los datos del paciente.</p>
+              <form [formGroup]="patientForm">
+                <div class="form-group">
+                  <label for="name"
+                  ><strong>Nombre</strong
+                  ><span class="font-13 text-muted"></span
+                ></label>
+                  <input type="text" class="form-control" id="name" formControlName="name" [class.is-invalid]="getFieldValid('name')">
+                  <p class="text-danger" *ngIf="getFieldValid('name')">
+                    *Ingrese el <strong>nombre</strong>.
+                  </p>
+                </div>
+                <div class="form-group">
+                    <label for="lastName"
+                    ><strong>Apellido</strong
+                    ><span class="font-13 text-muted"></span
+                  ></label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName" [class.is-invalid]="getFieldValid('lastName')">
+                    <p class="text-danger" *ngIf="getFieldValid('lastName')">
+                      *Ingrese el <strong>apellido</strong>.
+                    </p>
+                  </div>
+                  <div class="form-group">
+                    <label for="dni"
+                    ><strong>DNI</strong
+                    ><span class="font-13 text-muted"></span
+                  ></label>
+                    <input type="number" class="form-control" id="dni" formControlName="dni" [class.is-invalid]="getFieldValid('dni')">
+                    <p class="text-danger" *ngIf="getFieldValid('dni')">
+                      *Ingrese el <strong>DNI</strong>.
+                    </p>
+                  </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-info" (click)="createPatient()">Crear</button>
+              <button type="button" class="btn btn-danger"  (click)="closedModal()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+<app-line-loader></app-line-loader>

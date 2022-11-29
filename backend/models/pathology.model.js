@@ -8,12 +8,6 @@ const PathologySchema = new Schema({
   symptom: [{ type: String }],
   possibleTreatment: [{ type: String }],
   deletedDate: { type: Date, default: null },
-}, { collection: 'phatologies' });
+}, { collection: 'pathologies' });
 
-PathologySchema.method('toJSON', () => {
-  const { __v, _id, ...object } = this.toObject();
-  object.id = _id;
-  return object;
-});
-
-module.exports = model('Phatology', PathologySchema);
+module.exports = model('Pathology', PathologySchema);

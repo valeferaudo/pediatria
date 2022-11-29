@@ -96,14 +96,14 @@ const customInitFunctions = () => {
         // ============================================================== 
         // Sidebarmenu
         // ============================================================== 
-        $(function() {
-            $('#sidebarnav').AdminMenu();
-        });
+        // $(function() {
+        //     $('#sidebarnav').AdminMenu();
+        // });
     
-        // ============================================================== 
-        // Perfact scrollbar
-        // ============================================================== 
-        $('.scroll-sidebar, .right-side-panel, .message-center, .right-sidebar').perfectScrollbar();
+        // // ============================================================== 
+        // // Perfact scrollbar
+        // // ============================================================== 
+        // $('.scroll-sidebar, .right-side-panel, .message-center, .right-sidebar').perfectScrollbar();
         
         // ============================================================== 
         // Resize all elements
